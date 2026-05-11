@@ -72,4 +72,15 @@ return {
       "nvim-tree/nvim-web-devicons",
     },
   },
+  {
+    "Zeioth/markmap.nvim",
+    build = "yarn global add markmap-cli",
+    cmd = { "MarkmapOpen", "MarkmapSave", "MarkmapWatch", "MarkmapWatchStop" },
+    config = function()
+      require("markmap").setup({
+        html_output = "/tmp/markmap.html",
+        preview = true,
+      })
+    end,
+  },
 }
