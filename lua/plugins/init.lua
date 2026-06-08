@@ -11,10 +11,22 @@ return {
   },
   {
     "lervag/vimtex",
+    lazy = false,
     ft = "tex",
     init = function()
+      vim.g.vimtex_quickfix_ignore_filters = {
+        "Underfull",
+        "Overfull",
+        "Package fontspec Warning",
+        "Package pgfplots Warning",
+        "Package fancyhdr Warning",
+      }
       vim.g.vimtex_view_method = "zathura"
       vim.g.vimtex_compiler_method = "latexmk"
+      vim.g.vimtex_compiler_latexmk = {
+        continuous = 1,
+        callback = 1,
+      }
     end,
   },
   {
@@ -30,8 +42,12 @@ return {
     opts = {
       ensure_installed = {
         "vim", "lua", "vimdoc",
-        "html", "css", "latex", "markdown",
+        "html", "css", "markdown",
         "markdown_inline",
+      },
+      highlight = {
+        enable = true,
+        disable = { "latex" },
       },
     },
   },
@@ -80,6 +96,34 @@ return {
       require("markmap").setup({
         html_output = "/tmp/markmap.html",
         preview = true,
+      })
+    end,
+  },
+  {
+    "kylechui/nvim-surround",
+    version = "*",
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup({
+        surrounds = {
+          ["c"] = {
+            add = function()
+              local cmd = require("nvim-surround.config").get_input("Command: ")
+              if cmd then
+                return { { "\\" .. cmd .. "{" }, { "}" } }
+              end
+            end,
+          },
+        
+          ["e"] = {
+            add = function()
+              local env = require("nvim-surround.config").get_input("Environment: ")
+              if env then
+                return { { "\\begin{" .. env .. "}" }, { "\\end{" .. env .. "}" } }
+              end
+            end,
+          },
+        }
       })
     end,
   },
